@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  core-vite-react:
+    image: core-vite-react:v1
+    container_name: core-vite-react
+    networks:
+    - core-vite-react
+    ports:
+    - "7200:443"
+    build:
+      context: .
+      dockerfile: Web\Dockerfile
+    
+networks:
+  core-vite-react:
+    name: core-vite-react_network
