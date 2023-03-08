@@ -6,7 +6,8 @@ import { formatDateTime } from '@/utilities/datetime';
 export const Telemetry = () => {
   // get latest values first
   const { result, error, loading, ready } = useLatestValues();
-  // then subscribe to telemetry
+
+  // then subscribe to telemetry via signalR
   const telemetry = useTelemetryHub();
 
   // prefer telemetry
@@ -20,10 +21,9 @@ export const Telemetry = () => {
       {
         !!error
           ? <div>An error occurred</div>
-          : loading
-            ? <Loader size={5} overlay={true} />
-            : data ? <TelemetryTable data={data} /> 
-            : <div/>
+          : loading ? <Loader size={5} overlay={true} />
+            : data ? <TelemetryTable data={data} />
+              : <div />
       }
     </>
   );

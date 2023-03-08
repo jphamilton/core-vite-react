@@ -2,22 +2,14 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import mkcert from 'vite-plugin-mkcert';
 import browserslistToEsbuild from 'browserslist-to-esbuild';
-import autoprefixer from 'autoprefixer';
 import { fileURLToPath, URL } from 'url';
 
 // https://vitejs.dev/config/
-
 export default defineConfig({
   build: {
     target: browserslistToEsbuild()
   },
-  css: {
-    postcss: {
-      plugins: [
-        autoprefixer({})
-      ]
-    }
-  },
+  //css: postcss /* loaded from postcss.config.cjs */
   plugins: [
     react(),
     mkcert()
