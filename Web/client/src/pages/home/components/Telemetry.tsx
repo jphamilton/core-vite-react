@@ -4,7 +4,7 @@ import { Loader } from '@/components';
 import { formatDateTime } from '@/utilities/datetime';
 
 export const Telemetry = () => {
-  // get latest values first
+  // get latest values
   const { result, error, loading, ready } = useLatestValues();
 
   // then subscribe to telemetry via signalR
