@@ -3,7 +3,7 @@
 This is just a starter, not an opinion. This should at least give you an idea about how to set things up.
 
 Includes:
-- ASP.NET Core v7 (+MediatR)
+- ASP.NET Core v7
 - React v18 (+React Router)
 - Vite (TypeScript + SWC template)
 - SignalR
