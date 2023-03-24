@@ -1,0 +1,69 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Chrome",
+            "request": "launch",
+            "type": "chrome",
+            "url": "https://localhost:3000",
+            "webRoot": "${workspaceFolder}/client"
+        },
+        {
+            "name": "Vite",
+            "command": "npm run dev",
+            "request": "launch",
+            "type": "node-terminal",
+            "cwd": "${workspaceFolder}/client",
+        },
+        {
+            "name": "API",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/api/bin/Debug/net7.0/api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/api",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+                "uriFormat": "%s/swagger"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "https://localhost:7200",
+                "PG_CONN_STRING": "Host=localhost;Port=7432;Database=postgres;Username=admin;Password=admin",
+                "JWT_VALID_AUDIENCE": "cvr-audience",
+                "JWT_VALID_ISSUER": "cvr-issuer",
+                "JWT_SIGNING_KEY": "!*SuperSecretKey*!"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": "API Attach",
+            "type": "coreclr",
+            "request": "attach"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Vite+Chrome",
+            "configurations": [
+                "Vite", 
+                "Chrome"
+            ],
+            "stopAll": true
+        },
+        {
+            "name": "API+Vite+Chrome",
+            "configurations": [
+                "API",
+                "Vite", 
+                "Chrome", 
+            ],
+            "stopAll": true,
+        }
+    ]
+}

@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  api:
+    image: cvr-api:v1
+    container_name: cvr-api
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTPS_PORT=7200
+      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=supersecret
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/cert/API.pfx
+    networks:
+      - cvr
+    ports:
+      - "7200:443"
+    volumes:
+      # Windows using Linux containers
+      # See https://github.com/dotnet/dotnet-docker/blob/main/samples/run-aspnetcore-https-development.md
+      #- ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      #- ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${USERPROFILE}\.aspnet\https:/cert/
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+  db:
+    image: postgres:15.2
+    container_name: cvr-db
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=postgres
+    networks:
+      - cvr
+    ports:
+      - "7432:5432"
+    volumes: 
+      - db:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d
+  db-admin:
+    image: dpage/pgadmin4
+    container_name: cvr-db-admin
+    networks:
+      - cvr
+    ports:
+      - "7433:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    volumes:
+      - db-admin:/var/lib/pgadmin
+
+volumes:
+  db:
+    driver: local
+  db-admin:
+    driver: local
+
+networks:
+  cvr:
+    name: cvr_network
+

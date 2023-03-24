@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15.2
+    container_name: cvr-db
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=postgres
+    networks:
+      - cvr
+    ports:
+      - "7432:5432"
+    volumes: 
+      - db:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d
+  db-admin:
+    image: dpage/pgadmin4
+    container_name: cvr-db-admin
+    networks:
+      - cvr
+    ports:
+      - "7433:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    volumes:
+      - db-admin:/var/lib/pgadmin
+
+volumes:
+  db:
+    driver: local
+  db-admin:
+    driver: local
+
+networks:
+  cvr:
+    name: cvr_network
+

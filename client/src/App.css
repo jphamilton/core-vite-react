@@ -1,0 +1,48 @@
+#root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.active {
+  color: var(--color-active);
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.page-container {
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-container {
+}
+
+  .form-container > * {
+    width: 100%;
+    margin-top: 0.5em;
+  }
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.menu {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu > * {
+  margin: 0 0.5em;
+}

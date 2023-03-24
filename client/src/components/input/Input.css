@@ -1,0 +1,19 @@
+﻿input {
+  background-color: var(--color-input-background);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 1em;
+  height: 42px;
+  padding-left: 0.5em;
+}
+
+  input:hover {
+    border: 1px solid var(--color-accent);
+  }
+
+  input:focus {
+    border: 1px solid var(--color-accent);
+    outline: none;
+  }
+ 
+
