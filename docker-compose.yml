@@ -18,8 +18,6 @@ services:
     volumes:
       # Windows using Linux containers
       # See https://github.com/dotnet/dotnet-docker/blob/main/samples/run-aspnetcore-https-development.md
-      #- ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      #- ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${USERPROFILE}\.aspnet\https:/cert/
     build:
       context: .

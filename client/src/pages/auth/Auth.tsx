@@ -1,9 +1,8 @@
-import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { Login } from './Login';
 import { Register } from './Register';
 
 export const Auth = () => {
-  
   return (
     <Routes>
       <Route path='/' element={

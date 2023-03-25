@@ -15,10 +15,9 @@ public class LatestValuesHandler : IStandardHandler<LatestValuesRequest, IEnumer
 
     public async Task<StandardResult<IEnumerable<TelemetryData>>> Handle(LatestValuesRequest request, CancellationToken cancellationToken)
     {
-        return new StandardResult<IEnumerable<TelemetryData>>(true)
-        {
-            Result = await _telemetryService.GetLatestValues()
-        };
+        var latest = await _telemetryService.GetLatestValues();
+
+        return new StandardResult<IEnumerable<TelemetryData>>(latest);
     }
 
 }

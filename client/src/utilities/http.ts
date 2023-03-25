@@ -1,43 +1,52 @@
+import axios from 'axios';
+import type { AxiosError, AxiosRequestConfig } from 'axios';
+import store from '@/app/store';
 
-export async function get<T>(url: string): Promise<StandardResult<T>> {
-  try {
+function getToken() {
+  const state = store.getState();
+  return state.app.token;
+}
 
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      let text = await response.text();
-      text = parseException(text);
-      return getErrorResult(text);
-    }
-
-    const result: StandardResult<T> = await response.json();
-
-    if (!result.success) {
-      console.error(result.error || 'Unknown error occurred');
-    }
-
-    return result;
-
-  } catch (err) {
-
-    console.log('Server error:', err);
-
-    return getErrorResult(err as string);
+function getErrorResult<T>(error: string): ErrorResult<T> {
+  return {
+    success: false,
+    errors: [error],
+    result: null
   }
 }
 
-function getErrorResult<T>(err: string) {
-  const d: StandardResult<T> = {
-    success: false,
-    error: err as string,
-    result: null as T
-  };
-
-  console.log('error', d);
-
-  return d;
+function request<T>(config: AxiosRequestConfig): StandardPromise<T> {
+  return axios(config).then(response => {
+    return response.data as StandardResult<T>
+  }).catch((err: AxiosError<ErrorResult<T>,void>) => {
+    if (err.response?.status === 401) {
+      return getErrorResult('You are not authorized.');
+    }
+    return getErrorResult('An unknown error has occurred.')  });
 }
 
-function parseException(ex: string) {
-  return ex.substring(0, ex.indexOf('\r\n')).substring(ex.indexOf(' ') + 1);
+function config(method: string): AxiosRequestConfig {
+  const token = getToken();
+  
+  return {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(!!token && {'Authorization': `Bearer ${token}`})
+    }
+  }
 }
+
+export async function post<T>(url: string, data: any): StandardPromise<T> {
+  return request({...config('POST'), 
+    url,
+    data 
+  });
+}
+
+export async function get<T>(url: string): StandardPromise<T> {
+  return request({...config('GET'), 
+    url,
+  });
+}
+

@@ -5,7 +5,7 @@ using API.Requests.Identity;
 namespace API.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/auth")]
 public class AuthController : StandardController
 {
 
@@ -13,7 +13,7 @@ public class AuthController : StandardController
     {
     }
 
-    [HttpPost]
+    [HttpPost] 
     [Route("register")]
     public async Task<IActionResult> Register(RegistrationRequest request)
     {
@@ -22,7 +22,7 @@ public class AuthController : StandardController
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> Authenticate([FromBody] AuthRequest request)
+    public async Task<IActionResult> Login([FromBody] AuthRequest request)
     {
         return await Send(request);
     }

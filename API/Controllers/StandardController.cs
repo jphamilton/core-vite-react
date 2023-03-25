@@ -17,8 +17,8 @@ public abstract class StandardController : ControllerBase
     {
         try
         {
-            await _sender.Send(request);
-            return Ok(new StandardResult(true));
+            var response = await _sender.Send(request);
+            return Ok(response);
         }
         catch(UnauthorizedAccessException)
         {
@@ -26,7 +26,7 @@ public abstract class StandardController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new StandardResult(ex));
+            return BadRequest(new StandardResult(ex.Message));
         }
     }
 
@@ -44,7 +44,7 @@ public abstract class StandardController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new StandardResult<TResponse>(ex));
+            return BadRequest(new StandardResult(ex.Message));
         }
     }
 

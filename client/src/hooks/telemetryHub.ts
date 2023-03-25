@@ -1,13 +1,13 @@
 import { HubConnection } from '@microsoft/signalr';
 import { useEffect } from 'react';
 import { getSignalRConnection } from '@/utilities/signalr';
-import { useAppDispatch } from '@/app/hooks';
-import { toast } from '@/app/appSlice';
-import { telemetryReceived } from '@/pages/home/reducers/telemetrySlice';
+import { useAppDispatch, useToast } from '@/hooks';
+import { telemetryReceived } from '@/pages/telemetry/reducers/telemetrySlice';
 
 export const useTelemetryHub = (connect: boolean) => {
   let connection: HubConnection;
   const dispatch = useAppDispatch();
+  const toast = useToast();
   let received = false;
 
   
@@ -22,24 +22,16 @@ export const useTelemetryHub = (connect: boolean) => {
 
       connection.on('subscribed', (response: string) => {
         console.log(response);
-
-        dispatch(toast({
-          message: response,
-          type: 'success'
-        }));
-
+        toast(response, 'success');
       });
 
       connection.on('telemetry', (telemetryData: TelemetryData[]) => {
         if (!received) {
           received = true;
-          dispatch(toast({
-            message: 'Receiving data...',
-            type: 'info'
-          }));
+          toast('Receiving data...', 'info');
         }
         dispatch(telemetryReceived(telemetryData));
-      })
+      });
 
       await connection.invoke('subscribe');
     }
@@ -53,14 +45,9 @@ export const useTelemetryHub = (connect: boolean) => {
           connection.off('telemetry');
 
           const message = 'Unsubscribed from Telemetry Hub'; 
-
           console.log(message);
 
-          dispatch(toast({
-            message,
-            type: 'success'
-          }));
-
+          toast(message, 'success');
         });
       }
     }

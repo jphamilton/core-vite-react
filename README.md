@@ -1,21 +1,22 @@
 # ASP.NET Core + Vite + React
 
-Not a starter, but more of a "how would I hook all this stuff up?"
+Not a starter, just an exploration into hooking these things up, playing with features, syntax and semantics. 
 
 Includes:
 - ASP.NET Core v7 (JWT Authentication)
 - React v18 (Redux, React Router)
 - Vite (React, TypeScript + SWC template)
-- SignalR
+- SignalR (with secure web sockets)
 
 
-## Notes for me (maybe helpful to you too)
+## Notes just for me
 
 Vite runs on port 3000 and proxies api and web sockets calls to the API on port 7200
 
-Make sure you have a trusted development certificate installed
-
+### Trusted development certificates
+See [Developing ASP.NET Core Applications with Docker over HTTPS](https://github.com/dotnet/dotnet-docker/blob/main/samples/run-aspnetcore-https-development.md)
 ```
+// Windows
 dotnet dev-certs https
 
 dotnet dev-certs https --trust

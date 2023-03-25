@@ -1,34 +1,31 @@
-import { useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from '@/app/hooks';
+import { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAppSelector, useAppDispatch, useToast } from '@/hooks';
+import { selectRegistered, loggedIn } from '@/app/appSlice';
+import * as API from '@/app/API';
 import { Button, Input } from '@/components';
-
-import {
-  selectLogin, updateLogin
-} from './reducers/authSlice';
 
 export const Login = () => {
   const dispatch = useAppDispatch();
-  const login = useAppSelector(selectLogin);
-  const { email, password } = login;
-  const isValid = email.length > 1 && password.length > 1;
+  const navigate = useNavigate();
+  const toast = useToast();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const registered = useAppSelector(selectRegistered);
+  
+  const isValid = !!email && email.length > 1 && !!password && password.length > 1;
 
-  useEffect(() => {
-    return () => {
-      dispatch(updateLogin({ email: '', password: '' }));
+  const onSubmit = async () => {
+    const response = await API.login(email, password);
+    
+    if (response.success) {
+      dispatch(loggedIn(response.result!));
+      navigate('/home');
+    } else {
+      response.errors.forEach(error => {
+        toast(error, 'error'); 
+      });
     }
-  }, []);
-
-  const onEmailChanged = (value: string) => {
-    dispatch(updateLogin({ email: value }));
-  }
-
-  const onPasswordChanged = (value: string) => {
-    dispatch(updateLogin({ password: value }));
-  }
-
-  const onSubmit = () => {
-
   }
 
   return (
@@ -40,7 +37,7 @@ export const Login = () => {
             placeholder='Email'
             value={email}
             immediate={true}
-            onChange={onEmailChanged}
+            onChange={setEmail}
           />
         </div>
         <div>
@@ -49,7 +46,7 @@ export const Login = () => {
             value={password}
             type='password'
             immediate={true}
-            onChange={onPasswordChanged}
+            onChange={setPassword}
           />
         </div>
         <Button
@@ -58,9 +55,11 @@ export const Login = () => {
           onClick={onSubmit}>Login</Button>
       </div>
 
-      <div className='row' style={{ justifyContent: 'flex-end' }}>
-        <NavLink to='/auth/register'>Register</NavLink>
-      </div>
+      {!registered && 
+        <div className='row' style={{ justifyContent: 'flex-end' }}>
+          <NavLink to='/auth/register'>Register</NavLink>
+        </div>
+      }
     </>
   );
 }

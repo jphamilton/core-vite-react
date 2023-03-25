@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using API.Identity;
 using API.Requests.Identity;
 using API.Shared;
@@ -24,22 +23,19 @@ public class AuthHandler : IStandardHandler<AuthRequest, AuthResponse>
 
     public async Task<StandardResult<AuthResponse>> Handle(AuthRequest request, CancellationToken cancellationToken)
     {
-        var result = new StandardResult<AuthResponse>();
-
         var managedUser = await _userManager.FindByEmailAsync(request.Email);
-
+        var errors = new List<string>();
+    
         if (managedUser == null)
         {
-            result.Errors.Add("Bad credentials");
-            return result;
+            return new StandardResult<AuthResponse>("Invalid credentials");
         }
 
         var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
 
         if (!isPasswordValid)
         {
-            result.Errors.Add("Bad credentials");
-            return result;
+            return new StandardResult<AuthResponse>("Invalid credentials");
         }
 
         var user = _context.Users.FirstOrDefault(u => u.Email == request.Email);
@@ -47,20 +43,19 @@ public class AuthHandler : IStandardHandler<AuthRequest, AuthResponse>
         if (user is null)
         {
             throw new UnauthorizedAccessException();
-            //return Unauthorized();
         }
 
         var accessToken = _jwtTokenGenerator.CreateToken(user);
 
         await _context.SaveChangesAsync();
 
-        result.Result = new AuthResponse
+        var response = new AuthResponse()
         {
             Username = user.UserName!,
             Email = user.Email!,
             Token = accessToken,
         };
 
-        return result;
+        return new StandardResult<AuthResponse>(response);
     }
 }

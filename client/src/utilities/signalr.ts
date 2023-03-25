@@ -8,9 +8,14 @@ import {
   HttpTransportType
 } from '@microsoft/signalr';
 
+import store from '@/app/store';
+
 const isDev = process.env.NODE_ENV === 'development';
 
-const connectionMap: { [url: string]: HubConnection } = {};
+const getToken = (): string => {
+  const state = store.getState();
+  return state.app.token!;
+}
 
 const startSignalRConnection = async (connection: HubConnection) => {
   try {
@@ -26,18 +31,12 @@ const startSignalRConnection = async (connection: HubConnection) => {
 
 export const getSignalRConnection = async (url: string) => {
 
-  // connections are left open and cached
-  if (connectionMap[url]) {
-    console.log('SignalR: Connection available.', connectionMap[url].state);
-    return connectionMap[url];
-  }
-
   const options: IHttpConnectionOptions = {
     logMessageContent: isDev,
     logger: isDev ? LogLevel.Warning : LogLevel.Error,
     skipNegotiation: true,
     transport: HttpTransportType.WebSockets,
-    //accessTokenFactory: () => getAccessToken(getState())
+    accessTokenFactory: () => getToken()
   };
 
   console.log('SignalR: Creating new connection.');
@@ -78,10 +77,6 @@ export const getSignalRConnection = async (url: string) => {
   });
   
   await startSignalRConnection(connection);
-
-  if (connection.state === HubConnectionState.Connected) {
-    connectionMap[url] = connection;
-  }
   
   return connection;
 

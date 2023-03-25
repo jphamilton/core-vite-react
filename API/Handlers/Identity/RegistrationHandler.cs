@@ -25,7 +25,6 @@ public class RegistrationHandler : IStandardHandler<RegistrationRequest>
         );
 
         var response = new StandardResult(result.Succeeded);
-
         
         if (!result.Succeeded)
         {

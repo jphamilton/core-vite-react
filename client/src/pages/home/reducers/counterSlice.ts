@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { RootState } from '@/app/store';
 
 type CounterState = {
-  value: number
+  value: number;
 };
 
 const initialState: CounterState = {

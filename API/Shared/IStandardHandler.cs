@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Shared.Telemetry;
 
 namespace API.Shared;
 

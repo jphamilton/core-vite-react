@@ -1,40 +1,35 @@
-import { useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from '@/app/hooks';
+import { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useToast } from '@/hooks';
+import { registered} from '@/app/appSlice';
 import { Button, Input } from '@/components';
-
-import {
-  selectRegistration, updateRegistration
-} from './reducers/authSlice';
+import * as API from '@/app/API';
 
 export const Register = () => {
   const dispatch = useAppDispatch();
-  const registration = useAppSelector(selectRegistration);
-  const { email, password, confirm } = registration;
+  const navigate = useNavigate();
+  const toast = useToast();
+  const [email, setEmail] = useState('');
+  const [userName, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
 
-  const isValid = password.length > 1 && password === confirm;
-
-  useEffect(() => {
-    return () => {
-      dispatch(updateRegistration({ email: '', password: '', confirm: '' }));
+  const isValid = !!email?.length && !!password?.length && password === confirm; 
+  
+  const onSubmit = async () => {
+    const response = await API.register(email, userName, password);
+    
+    if (response.success) {
+      // a litty dispatchy
+      toast('Registration complete!', 'success'); 
+      dispatch(registered(true));
+      navigate('/auth/login');
+    } else {
+      response.errors.forEach(error => {
+        toast(error, 'error'); 
+      });
     }
-  }, []);
-
-  const onEmailChanged = (value: string) => {
-    dispatch(updateRegistration({email: value}));
-  }
-
-  const onPasswordChanged = (value: string) => {
-    dispatch(updateRegistration({ password: value }));
-  }
-
-  const onConfirmChanged = (value: string) => {
-    dispatch(updateRegistration({ confirm: value }));
-  }
-
-  const onSubmit = () => {
-    console.log('clicking submit with', email, password, confirm);
-  }
+  };
 
   return (
     <>
@@ -45,7 +40,15 @@ export const Register = () => {
             placeholder='Email'
             value={email}
             immediate={ true }
-            onChange={onEmailChanged}
+            onChange={setEmail}
+          />
+        </div>
+        <div>
+          <Input
+            placeholder='Username'
+            value={email}
+            immediate={ true }
+            onChange={setUserName}
           />
         </div>
         <div>
@@ -54,7 +57,7 @@ export const Register = () => {
             value={password}
             type='password'
             immediate={ true }
-            onChange={onPasswordChanged}
+            onChange={setPassword}
           />
         </div>
         <div>
@@ -63,7 +66,7 @@ export const Register = () => {
             value={confirm}
             type='password'
             immediate={ true }
-            onChange={onConfirmChanged}
+            onChange={setConfirm}
           />
         </div>
         <Button

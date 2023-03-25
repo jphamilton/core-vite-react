@@ -18,10 +18,11 @@ public class StandardResultValidationFilter : IActionFilter
     {
         if (!context.ModelState.IsValid)
         {
-            var result = new StandardResult();
             var errors = context.ModelState.Values
                 .SelectMany(e => e.Errors)
-                .Select(x => x.ErrorMessage);
+                .Select(x => x.ErrorMessage).ToList();
+
+            var result = new StandardResult(errors);
             result.Errors.AddRange(errors);
             context.Result = new BadRequestObjectResult(result);
         }

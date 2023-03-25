@@ -11,7 +11,7 @@ public abstract class SubscriptionHub : Hub
 
     protected abstract IDisposable OnSubscribe(ISingleClientProxy client);
 
-    public override Task OnDisconnectedAsync(Exception exception)
+    public override Task OnDisconnectedAsync(Exception? exception)
     {
         base.OnDisconnectedAsync(exception);
         return Unsubscribe();

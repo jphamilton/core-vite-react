@@ -2,7 +2,7 @@
 
 namespace Services.Telemetry;
 
-// very fake and very primitive
+// Generate some fake data
 
 public class TelemetryService : ITelemetryService
 {

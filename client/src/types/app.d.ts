@@ -1,9 +1,16 @@
-type StandardResult<T> = {
-  success: boolean;
+type SuccessResult<T> = {
+  success: true;
   result: T;
-  error: string;
+  errors: string[];
 }
 
+type ErrorResult<T> = {
+  success: false;
+  result: null;
+  errors: string[];
+}
+
+type StandardResult<T> = SuccessResult<T> | ErrorResult<T>;
 type StandardPromise<T> = Promise<StandardResult<T>>;
 type StandardApiCall<T> = (...args: any) => StandardPromise<T>;
 
@@ -22,4 +29,10 @@ type Toast = {
   message: string;
   duration?: number;
   type: ToastType;
+}
+
+type LoginResponse = {
+  email: string;
+  userName: string;
+  token: string;
 }

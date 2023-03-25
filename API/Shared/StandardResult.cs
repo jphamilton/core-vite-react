@@ -1,56 +1,38 @@
 ﻿namespace API.Shared;
 
-/// <summary>
-/// Standard response returned by the API. I am sure there are better
-/// standards but this is the standard here.
-/// </summary>
-/// <typeparam name="T">Result payload</typeparam>
-public class StandardResult
+public class Void {
+
+}
+
+public class StandardResult<T>  where T : class
 {
-    public bool Success { get; init; }
-    public List<string> Errors { get; init; } = new();
+    public bool Success { get; set; }
+    public List<string> Errors { get; set; } = new();
+    public T? Result { get; set; }
 
-    public StandardResult()
-    {
-    }
-
-    public StandardResult(bool success)
-    {
+    public StandardResult(bool success) {
         Success = success;
     }
 
-    public StandardResult(Exception ex)
-    {
+    public StandardResult(T result) {
+        Result = result;
+        Success = true;
+    }
+
+    public StandardResult(IList<string> errors) {
+        Errors.AddRange(errors);
         Success = false;
-        Errors.Add(ex.Message);
+    }
+   
+    public StandardResult(string error) {
+        Errors.Add(error);
+        Success = false;
     }
 }
 
-
-public class StandardResult<T> : StandardResult where T : class
-{
-    public T Result { get; set; }
-
-    public StandardResult(Exception ex)
-    {
-        Errors.Add(ex.Message);
-        Success = false;
-        Result = default;
-    }
-
-    public StandardResult()
-    {
-
-    }
+public class StandardResult : StandardResult<Void> {
     
-    public StandardResult(T result)
-    {
-        Success = true;
-        Result = result;
-    }
-
-    public StandardResult(bool success)
-    {
-        Success = success;
-    }
+    public StandardResult(bool success): base(success) { }
+    public StandardResult(IList<string> errors): base(errors) { }
+    public StandardResult(string error): base(error) { }
 }
